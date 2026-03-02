@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            box-sizing: border-box;
+        }
+
+        #main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 99vh;
+            margin: 0;
+        }
+
+        .card {
+            width: 400px;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .card-footer {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .card-footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .card-footer a:hover {
+            text-decoration: underline;
+        }
+
+        #left {
+            width: 50%;
+            margin: 0;
+        }
+
+        #right {
+            width: 50%;
+            height: auto;
+            border-radius: 10px;
+            position: relative;
+            right: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #right img {
+            width: 100%;
+            position: absolute;
+            height: auto;
+            border-radius: 10px;
+            left: 250px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <div class="container" id="left">
+            <div class="row justify-content-center">
+                <div class="col-md-5 col-12">
+                    <div class="card mt-4">
+                        <div class="card-body koli">
+                            <form method="post" onsubmit="signin(event)">
+                                <h2 style="color: red; text-align: center; margin: 0; padding-bottom: 10px;">vGT</h2>
+                                <input type="tel" id="tel" placeholder="Phone" class="form-control mb-3" required>
+                                <input type="password" id="password" placeholder="Password" class="form-control mb-3"
+                                    required>
+                                <input type="submit" class="btn btn-primary form-control" value="Log in">
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <p>არ გაქვს ანგარიში? <a href="signup.html">რეგისტრაცია</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container" id="right">
+            <img src="car-dealership-alsa-enterprises-motors-used-car-vehicle-png-favpng-18ELSuUwDktMY3vuGBHXbz1k8.jpg"
+                alt="">
+        </div>
+    </div>
+    <script>
+        function signin(event) {
+            event.preventDefault();
+
+            axios.post("https://rentcar.stepprojects.ge/api/Users/login", {
+                "password": document.getElementById("password").value,
+                "phoneNumber": document.getElementById("tel").value,
+            }).then(function (response) {
+                window.localStorage.setItem("token", response.data.token)
+            }).catch(function (err) {
+                console.log(err);
+            })
+        }
+
+        function signin(event) {
+            event.preventDefault();
+
+            let tel = document.getElementById("tel").value;
+            let password = document.getElementById("password").value;
+
+            if (tel == "" || password == "") {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+
+</html>
