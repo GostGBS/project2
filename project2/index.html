@@ -4,385 +4,428 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title style="color: red;">vGT Rental</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>vGT Rental | Premium Fleet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        :root {
+            --brand-red: #ff0000;
+            --dark-bg: #000;
+        }
+
         body {
             margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            overflow-x: hidden;
         }
 
-        .continer {
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            width: 100%;
-
-        }
-
-        .box {
-            margin-top: 60px;
-            width: 90%;
-            height: 95vh;
-            background-image: url(close-up-red-luxury-car-on-black-background-with-copy-space-photo.jpg);
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-size: 100vw 100vh;
-            border-radius: 20px;
-            display: flex;
+        /* --- Nav Link Hover Effect --- */
+        .nav-link {
             position: relative;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            text-decoration: none;
+            color: white !important;
+            font-weight: 500;
+            padding: 5px 0;
+            transition: color 0.3s ease;
         }
 
-        .box:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.2) inset;
-        }
-
-        .textbox {
-            width: 70%;
-            height: 50%;
-            color: white;
-            border-radius: 20px;
+        .nav-link::after {
+            content: '';
             position: absolute;
-            left: 140px;
-            top: 80px;
-            font-size: 24px;
-            font-weight: bold;
-            font-size: 30px;
-            font: sans-serif;
-
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--brand-red);
+            transition: width 0.3s ease;
         }
 
-        #fir {
-            width: 150px;
-            height: 50px;
-            background-color: white;
-            color: black;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-
-        #sec {
-            width: 200px;
-            height: 50px;
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: duration 0.3s ease;
-        }
-
-        #fir:hover {
-            background-color: #a8a6a6;
-            transition: background-color 0.3s ease;
-
-        }
-
-        #sec:hover {
-            background-color: white;
-            color: black;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .cardd {
-            width: 350px;
-            height: 470px;
-            border: none;
-            border-radius: 15px;
-            background: linear-gradient(135deg, red 0%, black 100%);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1) inset;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow: hidden;
-            color: white;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .cardd:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.2) inset;
-        }
-
-        .cardd img {
+        .nav-link:hover::after {
             width: 100%;
-            height: 220px;
-            object-fit: cover;
-            transition: transform 0.3s ease;
         }
 
-        .cardd:hover img {
-            transform: scale(1.05);
+        .nav-link:hover {
+            color: var(--brand-red) !important;
         }
 
-        .cardd h5 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-top: 16px;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .cardd p {
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .rent-btn {
-            background-color: #0066cc;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .rent-btn:hover {
-            background-color: #0052a3;
-        }
-
-        .buta:hover {
-            background-color: white;
-            color: black;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .buta {
-            width: 200px;
-            height: 50px;
-            background-color: transparent;
-            color: white;
-            border: 2px solid white;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: duration 0.3s ease;
-        }
-
-        .po {
-            margin-top: 20px;
-        }
-
-        .gt {
-
-            margin: 20px 0px 0px 0px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+        /* Hero Section */
+        .hero-box {
+            margin-top: 80px;
             width: 100%;
-            border: 1px solid rgb(194, 192, 192);
+            height: 70vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
             border-radius: 20px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1) inset;
-
-        }
-
-        #roww {
-            width: 100%;
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin-top: 40px;
-
-
+            padding: 0 10%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
         }
 
-        .slide {
-            width: 100%;
-            height: 200px;
-            margin-top: 50px;
-            border-radius: 20px;
-            border: 1px solid rgb(194, 192, 192);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1) inset;
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
         }
 
+        /* Carousel & Popular Cards */
         .custom-carousel {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgb(194, 192, 192);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 1px rgba(255, 255, 255, 0.1) inset;
-            margin-top: 50px;
+            background: #0a0a0a;
+            padding: 20px;
             border-radius: 20px;
+            margin: 40px 0;
+            position: relative;
+            border: 1px solid #1a1a1a;
         }
 
         .carousel-track {
             display: flex;
-            overflow-x: hidden;
+            overflow-x: auto;
             scroll-behavior: smooth;
-            gap: 15px;
-            width: 100%;
+            gap: 20px;
+            padding: 10px 0;
+            scrollbar-width: none;
         }
 
-        .carousel-track img {
-            width: 300px;
+        .carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .popular-card {
+            min-width: 300px;
             height: 200px;
-            object-fit: cover;
-            flex-shrink: 0;
-            transition: transform 0.3s ease;
-
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
         }
 
-        .carousel-track img:hover {
-            transform: scale(1.05);
-            transition: transform 0.3s ease;
-        }
-
-        .prev, .next {
+        /* Heart Button for all Cards */
+        .like-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.6);
             border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .like-btn.liked {
+            color: var(--brand-red);
+        }
+
+        .like-btn.liked i {
+            transform: scale(1.2);
+        }
+
+        /* Catalog Cards */
+        .cardd {
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #111 0%, #000 100%);
+            color: white;
+            overflow: hidden;
+            transition: 0.3s;
+            height: 100%;
+            position: relative;
+            border: 1px solid #222;
+        }
+
+        .cardd:hover {
+            transform: translateY(-10px);
+            border-color: #444;
+        }
+
+        .cardd img {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .rent-btn-card {
+            width: 90%;
+            margin: 10px auto;
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .rent-btn-card:hover {
+            background: var(--brand-red);
+            border-color: var(--brand-red);
+        }
+
+        .filter-sidebar {
+            background: #0a0a0a;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #1a1a1a;
+            position: sticky;
+            top: 100px;
+        }
+
+        .le {
+            cursor: pointer;
+            font-size: 2rem;
+            color: #555;
+            transition: 0.3s;
+        }
+
+        .le:hover {
+            color: white;
         }
     </style>
 </head>
 
 <body>
-    <nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <div class="row fixed-top bg-light ">
-                <div class="col-6" style="background-color: black; padding-left: 20px;">
-                    <h1 style="color: red; font-weight: bold;">vGT rent</h1>
+            <a class="navbar-brand text-danger fw-bold fs-3" href="#">vGT rent</a>
+            <div class="ms-auto d-flex align-items-center" id="nav-auth-section">
+                <a href="#homa" class="nav-link d-inline mx-2">Home</a>
+                <a href="#renta" class="nav-link d-inline mx-2">Rent</a>
+
+                <div id="guest-links" class="d-inline">
+                    <a href="signup.html" class="nav-link d-inline mx-2">Sign up</a>
+                    <a href="loginn.html" class="nav-link d-inline mx-2">Login</a>
                 </div>
-                <div class="col-6 d-flex justify-content-end align-items-center "
-                    style="background-color: black; padding-right: 30px;">
-                    <a href="#textb" style="color: white; text-decoration: none; margin-right: 20px;">Home</a>
-                    <a href="#" style="color: white; text-decoration: none; margin-right: 20px;">Rent</a>
-                    <a href="signup.html" style="color: white; text-decoration: none; margin-right: 20px;">Sign up</a>
-                    <a href="loginn.html" style="color: white; text-decoration: none; ">Log in</a>
+
+                <div id="user-links" class="d-none">
+                    <a href="#" class="nav-link d-inline mx-2 text-danger" onclick="handleLogout()">Log out</a>
                 </div>
             </div>
         </div>
     </nav>
-    <div class="continer" id="textb">
-        <div class="box">
-            <div class="textbox">
-                <h1 style="margin: 0;">Your Road Awaits.</h1>
-                <h1 style="margin-top: 0;">Rent With Us Today!</h1>
-                <h3>Discover a Fleet of Quality Vehicles,<br> Seamless Booking, and Unbeatable<br> Service with vGT rent
-                </h3>
-                <button id="fir">Rent a Car</button>
-                <button id="sec">Discover our fleet</button>
+
+    <div class="container" id="homa">
+        <div class="hero-box">
+            <div class="hero-text">
+                <h1>Your Road Awaits.<br>Rent With Us.</h1>
+                <p class="fs-4 text-secondary">Discover our fleet of high-performance vehicles.</p>
+                <a href="#renta" class="btn"
+                    style="background: white; color: black; font-weight: bold; border-radius: 8px; padding: 12px 25px;">Rent
+                    a Car</a>
+            </div>
+        </div>
+
+        <div class="custom-carousel d-flex align-items-center">
+            <div class="le prev">‹</div>
+            <div class="carousel-track" id="popularTrack"></div>
+            <div class="le next">›</div>
+        </div>
+
+        <div class="row mb-5" id="renta">
+            <div class="col-lg-3 mb-4">
+                <div class="filter-sidebar">
+                    <h5 class="fw-bold mb-3">Brand Filter</h5>
+                    <div class="form-check">
+                        <input class="form-check-input filter-btn" type="radio" name="brand" value="All" id="all"
+                            checked>
+                        <label class="form-check-label" for="all">All Brands</label>
+                    </div>
+                    <div id="brandFilters"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="row g-4" id="roww"></div>
             </div>
         </div>
     </div>
-    <div class="container " style="width: 100%;">
-        <div class="custom-carousel">
-            <button class="prev">‹</button>
+    <footer class="vgt-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h3 class="text-danger fw-bold mb-3">vGT rent</h3>
+                    <p class="text-secondary">Premium car rental services for those who demand excellence on the road.
+                        Drive your dream today.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-x-twitter"></i></a>
+                    </div>
+                </div>
 
-            <div class="carousel-track"></div>
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="fw-bold mb-3">Explore</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="#homa">Home</a></li>
+                        <li><a href="#renta">Fleet</a></li>
+                        <li><a href="signup.html">Join Us</a></li>
+                    </ul>
+                </div>
 
-            <button class="next">›</button>
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="fw-bold mb-3">Contact</h5>
+                    <ul class="list-unstyled text-secondary footer-info">
+                        <li><i class="fas fa-location-dot text-danger me-2"></i> 123 Luxury Ave, Tbilisi</li>
+                        <li><i class="fas fa-phone text-danger me-2"></i> +995 555 123 456</li>
+                        <li><i class="fas fa-envelope text-danger me-2"></i> support@vgt-rent.ge</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="fw-bold mb-3">Newsletter</h5>
+                    <p class="text-secondary small">Get updates on new fleet arrivals.</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control bg-dark border-secondary text-white" placeholder="Email">
+                        <button class="btn btn-danger" type="button">Go</button>
+                    </div>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center text-secondary small pb-4">
+                © 2026 vGT Rental. All rights reserved.
+            </div>
         </div>
-    </div>
-
-    <div class="container mt-5 gt">
-        <div class="row" id="roww">
-
-        </div>
-    </div>
-
-
+    </footer>
     <script>
-        fetch("https://rentcar.stepprojects.ge/api/Car").then(function (response) {
-            return response.json();
-        }).then(function (products) {
-            products.forEach(function (product) {
-                var colu = document.createElement("div");
-                colu.className = "col-md-4 mb-4";
+        const API_URL = "https://rentcar.stepprojects.ge/api/Car";
 
-                var card = document.createElement("div");
-                card.className = "card cardd";
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            if (token) {
+                document.getElementById("guest-links").classList.add("d-none");
+                document.getElementById("user-links").classList.remove("d-none");
+            }
+            loadProducts();
+            loadPopular();
+        });
 
-                var name = document.createElement("h5");
-                name.textContent = product.brand + " " + product.model;
-                name.className = "mt-3";
+        
+        function handleLogout() {
+            localStorage.removeItem("token");
+            Swal.fire({ title: "Logged Out", icon: "success", timer: 1000, showConfirmButton: false })
+                .then(() => window.location.reload());
+        }
 
-                var img = document.createElement("img");
-                img.src = product.imageUrl1;
-                img.src = product.imageUrl2;
-                img.src = product.imageUrl3;
+        
+        function bookNow(name) {
+            const token = localStorage.getItem("token");
 
-                var desc = document.createElement("p");
-                desc.textContent = product.price + " GEL per day";
-                desc.className = "po";
-
-                var button = document.createElement("button");
-                button.textContent = "Rent Now";
-                button.className = "buta";
-
-                card.appendChild(name);
-                card.appendChild(img);
-                card.appendChild(desc);
-                card.appendChild(button);
-                colu.appendChild(card);
-                document.querySelector("#roww").appendChild(colu);
-            })
-        })
-
-        fetch("https://rentcar.stepprojects.ge/api/Car/popular")
-            .then(res => res.json())
-            .then(cars => {
-
-                const track = document.querySelector(".carousel-track");
-
-                cars.forEach(car => {
-
-                    const images = [car.imageUrl1, car.imageUrl2, car.imageUrl3];
-
-                    images.forEach(url => {
-
-                        if (url) {   // თუ არსებობს
-                            const img = document.createElement("img");
-                            img.src = url;
-                            track.appendChild(img);
-                        }
-
-                    });
-
+            if (!token) {
+                Swal.fire({
+                    title: 'Authentication Required',
+                    text: "You must be logged in to rent a car. Would you like to login or sign up?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ff0000',
+                    cancelButtonColor: '#444',
+                    confirmButtonText: 'Log In',
+                    cancelButtonText: 'Sign Up'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "loginn.html";
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        window.location.href = "signup.html";
+                    }
                 });
+                return;
+            }
 
+            
+            Swal.fire({
+                title: 'Confirm Reservation',
+                text: `Would you like to reserve the ${name}?`,
+                icon: 'question',
+                confirmButtonColor: '#ff0000',
+                showCancelButton: true
+            });
+        }
+
+        
+        async function loadProducts() {
+            try {
+                const res = await fetch(API_URL);
+                const products = await res.json();
+                renderCards(products);
+                renderFilters(products);
+            } catch (err) { console.error(err); }
+        }
+
+        function renderCards(products) {
+            const row = document.querySelector("#roww");
+            row.innerHTML = products.map(car => `
+                <div class="col-md-6 col-xl-4 car-item" data-brand="${car.brand}">
+                    <div class="card cardd">
+                        <button class="like-btn" onclick="toggleLike(this)"><i class="fa-regular fa-heart"></i></button>
+                        <img src="${car.imageUrl1 || 'https://via.placeholder.com/300x200'}" class="card-img-top">
+                        <div class="card-body text-center">
+                            <h5 class="card-title fw-bold">${car.brand} ${car.model}</h5>
+                            <p class="text-secondary small">${car.price} GEL / Day</p>
+                            <button class="btn rent-btn-card" onclick="bookNow('${car.brand} ${car.model}')">Rent Now</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadPopular() {
+            fetch(API_URL + "/popular")
+                .then(res => res.json())
+                .then(cars => {
+                    const track = document.getElementById("popularTrack");
+                    track.innerHTML = cars.map(car => `
+                        <div class="popular-card">
+                            <button class="like-btn" onclick="toggleLike(this)"><i class="fa-regular fa-heart"></i></button>
+                            <img src="${car.imageUrl1}" style="width:100%; height:100%; object-fit:cover;">
+                            <div style="position:absolute; bottom:10px; left:10px; z-index:2">
+                                <button class="btn btn-sm btn-light fw-bold" onclick="bookNow('${car.brand}')">Quick Rent</button>
+                            </div>
+                        </div>
+                    `).join('');
+                });
+        }
+
+        function toggleLike(btn) {
+            btn.classList.toggle('liked');
+            const icon = btn.querySelector('i');
+            icon.className = btn.classList.contains('liked') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+        }
+
+        function renderFilters(products) {
+            const brands = [...new Set(products.map(p => p.brand))];
+            const filterContainer = document.querySelector("#brandFilters");
+            brands.forEach(brand => {
+                filterContainer.innerHTML += `
+                    <div class="form-check">
+                        <input class="form-check-input filter-btn" type="radio" name="brand" value="${brand}" id="${brand}">
+                        <label class="form-check-label" for="${brand}">${brand}</label>
+                    </div>`;
             });
 
-        document.querySelector(".next").addEventListener("click", function () {
-            document.querySelector(".carousel-track").scrollBy({
-                left: 315,
-                behavior: "smooth"
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('change', (e) => {
+                    const selected = e.target.value;
+                    document.querySelectorAll('.car-item').forEach(item => {
+                        item.style.display = (selected === "All" || item.dataset.brand === selected) ? "block" : "none";
+                    });
+                });
             });
-        });
+        }
 
-        document.querySelector(".prev").addEventListener("click", function () {
-            document.querySelector(".carousel-track").scrollBy({
-                left: -315,
-                behavior: "smooth"
-            });
-        });
+        document.querySelector(".next").onclick = () => document.getElementById("popularTrack").scrollBy({ left: 320, behavior: "smooth" });
+        document.querySelector(".prev").onclick = () => document.getElementById("popularTrack").scrollBy({ left: -320, behavior: "smooth" });
     </script>
 </body>
 

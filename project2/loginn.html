@@ -4,144 +4,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>vGT | Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
-            box-sizing: border-box;
-        }
-
-        #main {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: #000;
+            color: white;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 99vh;
-            margin: 0;
         }
 
-        .card {
-            width: 400px;
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        
+        .login-card {
+            width: 90%;
+            max-width: 400px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
-        .card-body {
-            display: flex;
-            flex-direction: column;
+        .brand-logo {
+            color: #ff0000;
+            font-weight: 800;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 5px;
+            letter-spacing: -2px;
         }
 
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        
         .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 10px;
+            padding: 12px 15px;
             margin-bottom: 15px;
         }
 
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #ff0000;
+            color: white;
+            box-shadow: none;
         }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .card-footer {
-            text-align: center;
+        
+        .btn-login {
+            background: #ff0000;
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 10px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-top: 10px;
         }
 
-        .card-footer a {
-            color: #007bff;
+        .btn-login:hover {
+            background: #cc0000;
+            transform: scale(1.02);
+        }
+
+        .footer-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .footer-link a {
+            color: #ff0000;
             text-decoration: none;
+            font-weight: bold;
         }
 
-        .card-footer a:hover {
+        .footer-link a:hover {
             text-decoration: underline;
-        }
-
-        #left {
-            width: 50%;
-            margin: 0;
-        }
-
-        #right {
-            width: 50%;
-            height: auto;
-            border-radius: 10px;
-            position: relative;
-            right: 150px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #right img {
-            width: 100%;
-            position: absolute;
-            height: auto;
-            border-radius: 10px;
-            left: 250px;
         }
     </style>
 </head>
 
 <body>
-    <div class="container" id="main">
-        <div class="container" id="left">
-            <div class="row justify-content-center">
-                <div class="col-md-5 col-12">
-                    <div class="card mt-4">
-                        <div class="card-body koli">
-                            <form method="post" onsubmit="signin(event)">
-                                <h2 style="color: red; text-align: center; margin: 0; padding-bottom: 10px;">vGT</h2>
-                                <input type="tel" id="tel" placeholder="Phone" class="form-control mb-3" required>
-                                <input type="password" id="password" placeholder="Password" class="form-control mb-3"
-                                    required>
-                                <input type="submit" class="btn btn-primary form-control" value="Log in">
-                            </form>
-                        </div>
-                        <div class="card-footer">
-                            <p>არ გაქვს ანგარიში? <a href="signup.html">რეგისტრაცია</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container" id="right">
-            <img src="car-dealership-alsa-enterprises-motors-used-car-vehicle-png-favpng-18ELSuUwDktMY3vuGBHXbz1k8.jpg"
-                alt="">
+
+    <div class="login-card">
+        <h1 class="brand-logo">vGT</h1>
+        <p class="subtitle">Welcome back to the fleet</p>
+        
+        <form onsubmit="handleSignin(event)">
+            <input type="tel" id="tel" placeholder="Phone Number" class="form-control" required>
+            <input type="password" id="password" placeholder="Password" class="form-control" required>
+            
+            <button type="submit" class="btn btn-login w-100">Log In</button>
+        </form>
+
+        <div class="footer-link">
+            არ გაქვს ანგარიში? <a href="signup.html">რეგისტრაცია</a>
         </div>
     </div>
+
     <script>
-        function signin(event) {
+        async function handleSignin(event) {
             event.preventDefault();
 
-            axios.post("https://rentcar.stepprojects.ge/api/Users/login", {
-                "password": document.getElementById("password").value,
-                "phoneNumber": document.getElementById("tel").value,
-            }).then(function (response) {
-                window.localStorage.setItem("token", response.data.token)
-            }).catch(function (err) {
-                console.log(err);
-            })
-        }
+            const loginData = {
+                phoneNumber: document.getElementById("tel").value,
+                password: document.getElementById("password").value
+            };
 
-        function signin(event) {
-            event.preventDefault();
+            try {
+                
+                Swal.fire({
+                    title: 'Verifying...',
+                    didOpen: () => { Swal.showLoading() },
+                    allowOutsideClick: false
+                });
 
-            let tel = document.getElementById("tel").value;
-            let password = document.getElementById("password").value;
+                const response = await axios.post("https://rentcar.stepprojects.ge/api/Users/login", loginData);
 
-            if (tel == "" || password == "") {
-                alert("Please fill in all fields");
-                return;
+                
+                window.localStorage.setItem("token", response.data.token);
+
+                await Swal.fire({
+                    title: "ავტორიზაცია წარმატებით დასრულდა!",
+                    icon: "success",
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+
+                
+                window.location.href = "index.html";
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    title: "Login Failed",
+                    text: "Check your credentials and try again.",
+                    icon: "error",
+                    confirmButtonColor: "#ff0000"
+                });
             }
-
-            window.location.href = "index.html";
         }
     </script>
 </body>
