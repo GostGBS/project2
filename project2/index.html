@@ -11,11 +11,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* CSS Variables: Stores brand colors for easy reuse */
         :root {
             --brand-red: #ff0000;
             --dark-bg: #000;
         }
 
+        /* Basic Page Setup */
         body {
             margin: 0;
             font-family: 'Segoe UI', Roboto, sans-serif;
@@ -24,7 +26,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Nav Link Hover Effect --- */
+        /* Navigation link hover effect: The red line that grows under the text */
         .nav-link {
             position: relative;
             text-decoration: none;
@@ -53,7 +55,7 @@
             color: var(--brand-red) !important;
         }
 
-        /* Hero Section */
+        /* Hero Section: The large top banner with the background image */
         .hero-box {
             margin-top: 80px;
             width: 100%;
@@ -75,7 +77,7 @@
             line-height: 1.1;
         }
 
-        /* Carousel & Popular Cards */
+        /* Carousel/Track: The horizontal scrolling section for "Popular" cars */
         .custom-carousel {
             background: #0a0a0a;
             padding: 20px;
@@ -92,12 +94,15 @@
             gap: 20px;
             padding: 10px 0;
             scrollbar-width: none;
+            /* Hides scrollbar in Firefox */
         }
 
         .carousel-track::-webkit-scrollbar {
             display: none;
+            /* Hides scrollbar in Chrome/Safari */
         }
 
+        /* Popular Cars: Individual images in the carousel */
         .popular-card {
             min-width: 300px;
             height: 200px;
@@ -106,7 +111,7 @@
             overflow: hidden;
         }
 
-        /* Heart Button for all Cards */
+        /* Heart Button: Positioned in the corner of every car card */
         .like-btn {
             position: absolute;
             top: 15px;
@@ -126,6 +131,7 @@
             backdrop-filter: blur(5px);
         }
 
+        /* Liked State: Changes heart to red and scales it up slightly */
         .like-btn.liked {
             color: var(--brand-red);
         }
@@ -134,7 +140,7 @@
             transform: scale(1.2);
         }
 
-        /* Catalog Cards */
+        /* Catalog Cards: The main vehicle listings in the grid */
         .cardd {
             border: none;
             border-radius: 15px;
@@ -158,6 +164,7 @@
             object-fit: cover;
         }
 
+        /* Rental Button inside the cards */
         .rent-btn-card {
             width: 90%;
             margin: 10px auto;
@@ -174,6 +181,7 @@
             border-color: var(--brand-red);
         }
 
+        /* Sidebar: Sticky filter column on the left */
         .filter-sidebar {
             background: #0a0a0a;
             padding: 20px;
@@ -183,6 +191,7 @@
             top: 100px;
         }
 
+        /* Carousel Arrows (Left/Right) */
         .le {
             cursor: pointer;
             font-size: 2rem;
@@ -192,6 +201,15 @@
 
         .le:hover {
             color: white;
+        }
+
+        .prof {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .prof:hover {
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -211,6 +229,8 @@
 
                 <div id="user-links" class="d-none">
                     <a href="#" class="nav-link d-inline mx-2 text-danger" onclick="handleLogout()">Log out</a>
+                    <img onclick="onProfileClick()" src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                        alt="Profile" class="rounded-circle prof" width="35" height="35">
                 </div>
             </div>
         </div>
@@ -251,13 +271,14 @@
             </div>
         </div>
     </div>
+
     <footer class="vgt-footer">
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6">
                     <h3 class="text-danger fw-bold mb-3">vGT rent</h3>
                     <p class="text-secondary">Premium car rental services for those who demand excellence on the road.
-                        Drive your dream today.</p>
+                    </p>
                     <div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
@@ -298,35 +319,39 @@
             </div>
         </div>
     </footer>
+
     <script>
+        // API Base URL for fetching data
         const API_URL = "https://rentcar.stepprojects.ge/api/Car";
 
-        
+        // Logic to run when the page finishes loading
         document.addEventListener("DOMContentLoaded", () => {
             const token = localStorage.getItem("token");
+            // If user is logged in, hide Guest links and show User links
             if (token) {
                 document.getElementById("guest-links").classList.add("d-none");
                 document.getElementById("user-links").classList.remove("d-none");
             }
-            loadProducts();
-            loadPopular();
+            loadProducts(); // Load all cars from API
+            loadPopular(); // Load popular cars from API
         });
 
-        
+        // Logout function: Clears local session storage and reloads
         function handleLogout() {
             localStorage.removeItem("token");
             Swal.fire({ title: "Logged Out", icon: "success", timer: 1000, showConfirmButton: false })
                 .then(() => window.location.reload());
         }
 
-        
+        // Reservation/Booking logic
         function bookNow(name) {
             const token = localStorage.getItem("token");
 
+            // Redirect to login/signup if user isn't logged in
             if (!token) {
                 Swal.fire({
                     title: 'Authentication Required',
-                    text: "You must be logged in to rent a car. Would you like to login or sign up?",
+                    text: "You must be logged in to rent a car.",
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#ff0000',
@@ -343,7 +368,7 @@
                 return;
             }
 
-            
+            // Confirm booking if logged in
             Swal.fire({
                 title: 'Confirm Reservation',
                 text: `Would you like to reserve the ${name}?`,
@@ -353,22 +378,23 @@
             });
         }
 
-        
+        // Fetch all cars and trigger rendering
         async function loadProducts() {
             try {
                 const res = await fetch(API_URL);
                 const products = await res.json();
-                renderCards(products);
-                renderFilters(products);
+                renderCards(products); // Draw car cards
+                renderFilters(products); // Draw filter buttons
             } catch (err) { console.error(err); }
         }
 
+        // Creates the HTML for the car cards in the catalog
         function renderCards(products) {
             const row = document.querySelector("#roww");
             row.innerHTML = products.map(car => `
                 <div class="col-md-6 col-xl-4 car-item" data-brand="${car.brand}">
                     <div class="card cardd">
-                        <button class="like-btn" onclick="toggleLike(this)"><i class="fa-regular fa-heart"></i></button>
+                        <button class="like-btn" onclick="toggleLike(this, '${car.id}', '${car.brand} ${car.model}', '${car.imageUrl1}')"><i class="fa-regular fa-heart"></i></button>
                         <img src="${car.imageUrl1 || 'https://via.placeholder.com/300x200'}" class="card-img-top">
                         <div class="card-body text-center">
                             <h5 class="card-title fw-bold">${car.brand} ${car.model}</h5>
@@ -380,6 +406,7 @@
             `).join('');
         }
 
+        // Fetch data for the horizontal popular slider
         function loadPopular() {
             fetch(API_URL + "/popular")
                 .then(res => res.json())
@@ -387,22 +414,41 @@
                     const track = document.getElementById("popularTrack");
                     track.innerHTML = cars.map(car => `
                         <div class="popular-card">
-                            <button class="like-btn" onclick="toggleLike(this)"><i class="fa-regular fa-heart"></i></button>
+                            <button class="like-btn" onclick="toggleLike(this, '${car.id}', '${car.brand} ${car.model}', '${car.imageUrl1}')"><i class="fa-regular fa-heart"></i></button>
                             <img src="${car.imageUrl1}" style="width:100%; height:100%; object-fit:cover;">
                             <div style="position:absolute; bottom:10px; left:10px; z-index:2">
-                                <button class="btn btn-sm btn-light fw-bold" onclick="bookNow('${car.brand}')">Quick Rent</button>
+                                <button class="btn btn-sm btn-light fw-bold" onclick="bookNow('${car.brand} ${car.model}')">Quick Rent</button>
                             </div>
                         </div>
                     `).join('');
                 });
         }
 
-        function toggleLike(btn) {
+        // Handles the visual change of the heart icon
+        function toggleLike(btn, carId, carName, carImg) {
             btn.classList.toggle('liked');
             const icon = btn.querySelector('i');
+
+            // 1. Visual change
             icon.className = btn.classList.contains('liked') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+
+            // 2. Save to LocalStorage
+            let favorites = JSON.parse(localStorage.getItem("vgt_favorites")) || [];
+
+            if (btn.classList.contains('liked')) {
+                // Add car to favorites if not already there
+                if (!favorites.find(c => c.id === carId)) {
+                    favorites.push({ id: carId, name: carName, img: carImg });
+                }
+            } else {
+                // Remove car from favorites
+                favorites = favorites.filter(c => c.id !== carId);
+            }
+
+            localStorage.setItem("vgt_favorites", JSON.stringify(favorites));
         }
 
+        // Extracts unique brands from the data to build the sidebar filter
         function renderFilters(products) {
             const brands = [...new Set(products.map(p => p.brand))];
             const filterContainer = document.querySelector("#brandFilters");
@@ -414,6 +460,7 @@
                     </div>`;
             });
 
+            // Filter functionality: hides/shows cars based on the selected radio button
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.addEventListener('change', (e) => {
                     const selected = e.target.value;
@@ -424,8 +471,13 @@
             });
         }
 
+        // Popular Slider navigation controls
         document.querySelector(".next").onclick = () => document.getElementById("popularTrack").scrollBy({ left: 320, behavior: "smooth" });
         document.querySelector(".prev").onclick = () => document.getElementById("popularTrack").scrollBy({ left: -320, behavior: "smooth" });
+
+        function onProfileClick() {
+            window.location.href = "profile.html";
+        }
     </script>
 </body>
 
