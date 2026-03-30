@@ -11,13 +11,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        /* CSS Variables: Stores brand colors for easy reuse */
+  
         :root {
             --brand-red: #ff0000;
             --dark-bg: #000;
         }
 
-        /* Basic Page Setup */
+
         body {
             margin: 0;
             font-family: 'Segoe UI', Roboto, sans-serif;
@@ -26,7 +26,7 @@
             overflow-x: hidden;
         }
 
-        /* Navigation link hover effect: The red line that grows under the text */
+    
         .nav-link {
             position: relative;
             text-decoration: none;
@@ -55,7 +55,7 @@
             color: var(--brand-red) !important;
         }
 
-        /* Hero Section: The large top banner with the background image */
+     
         .hero-box {
             margin-top: 80px;
             width: 100%;
@@ -77,7 +77,7 @@
             line-height: 1.1;
         }
 
-        /* Carousel/Track: The horizontal scrolling section for "Popular" cars */
+  
         .custom-carousel {
             background: #0a0a0a;
             padding: 20px;
@@ -94,15 +94,15 @@
             gap: 20px;
             padding: 10px 0;
             scrollbar-width: none;
-            /* Hides scrollbar in Firefox */
+         
         }
 
         .carousel-track::-webkit-scrollbar {
             display: none;
-            /* Hides scrollbar in Chrome/Safari */
+          
         }
 
-        /* Popular Cars: Individual images in the carousel */
+   
         .popular-card {
             min-width: 300px;
             height: 200px;
@@ -111,7 +111,7 @@
             overflow: hidden;
         }
 
-        /* Heart Button: Positioned in the corner of every car card */
+       
         .like-btn {
             position: absolute;
             top: 15px;
@@ -131,7 +131,7 @@
             backdrop-filter: blur(5px);
         }
 
-        /* Liked State: Changes heart to red and scales it up slightly */
+    
         .like-btn.liked {
             color: var(--brand-red);
         }
@@ -140,7 +140,7 @@
             transform: scale(1.2);
         }
 
-        /* Catalog Cards: The main vehicle listings in the grid */
+   
         .cardd {
             border: none;
             border-radius: 15px;
@@ -164,7 +164,7 @@
             object-fit: cover;
         }
 
-        /* Rental Button inside the cards */
+     
         .rent-btn-card {
             width: 90%;
             margin: 10px auto;
@@ -181,7 +181,7 @@
             border-color: var(--brand-red);
         }
 
-        /* Sidebar: Sticky filter column on the left */
+    
         .filter-sidebar {
             background: #0a0a0a;
             padding: 20px;
@@ -191,7 +191,7 @@
             top: 100px;
         }
 
-        /* Carousel Arrows (Left/Right) */
+        
         .le {
             cursor: pointer;
             font-size: 2rem;
@@ -323,121 +323,136 @@
     </footer>
 
     <script>
-    // API Base URL
-    const API_URL = "https://rentcar.stepprojects.ge/api/Car";
 
-    document.addEventListener("DOMContentLoaded", () => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            document.getElementById("guest-links").classList.add("d-none");
-            document.getElementById("user-links").classList.remove("d-none");
-        }
-        loadProducts(); 
-        loadPopular(); 
-    });
+const API_URL = "https://rentcar.stepprojects.ge/api/Car";
 
-    // Helper: Extract Phone from JWT Token
-    function getPhoneFromToken(token) {
-        try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payload = JSON.parse(atob(base64));
-            return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone"];
-        } catch (e) {
-            return null;
-        }
+document.addEventListener("DOMContentLoaded", () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        document.getElementById("guest-links").classList.add("d-none");
+        document.getElementById("user-links").classList.remove("d-none");
+    }
+    loadProducts();
+    loadPopular();
+});
+
+
+function getPhoneFromToken(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(atob(base64));
+        return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone"];
+    } catch (e) {
+        return null;
+    }
+}
+
+
+async function rentCar(carId) {
+    
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        Swal.fire({
+            title: 'Authentication Required',
+            text: "You must be logged in to rent a car.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff0000',
+            cancelButtonColor: '#444',
+            confirmButtonText: 'Log In',
+            cancelButtonText: 'Sign Up'
+        }).then((result) => {
+            if (result.isConfirmed) window.location.href = "loginn.html";
+            else if (result.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html";
+        });
+        return;
     }
 
-    // Main Renting Function
-    async function rentCar(carId) {
-        const token = localStorage.getItem("token");
+    const { isConfirmed } = await Swal.fire({
+        title: "Confirm Reservation",
+        text: "Do you want to rent this vehicle?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#ff0000",
+        confirmButtonText: "Yes, Rent it!"
+    });
 
-        // 1. Check Authentication
-        if (!token) {
-            Swal.fire({
-                title: 'Authentication Required',
-                text: "You must be logged in to rent a car.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ff0000',
-                cancelButtonColor: '#444',
-                confirmButtonText: 'Log In',
-                cancelButtonText: 'Sign Up'
-            }).then((result) => {
-                if (result.isConfirmed) window.location.href = "loginn.html";
-                else if (result.dismiss === Swal.DismissReason.cancel) window.location.href = "signup.html";
-            });
+    if (isConfirmed) {
+        const phoneNumber = getPhoneFromToken(token);
+        if (!phoneNumber) {
+            Swal.fire("Error", "Invalid user session. Please log in again.", "error");
             return;
         }
 
-        // 2. Confirm Rental
-        const { isConfirmed } = await Swal.fire({
-            title: "Confirm Reservation",
-            text: "Do you want to rent this vehicle?",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#ff0000",
-            confirmButtonText: "Yes, Rent it!"
-        });
+        try {
+            Swal.fire({ title: 'Processing...', didOpen: () => Swal.showLoading(), allowOutsideClick: false });
 
-        if (isConfirmed) {
-            const phoneNumber = getPhoneFromToken(token);
-            if (!phoneNumber) {
-                Swal.fire("Error", "Invalid user session. Please log in again.", "error");
-                return;
-            }
-
-            // 3. Process Purchase API
-            try {
-                // Showing a loading state
-                Swal.fire({
-                    title: 'Processing...',
-                    didOpen: () => { Swal.showLoading() },
-                    allowOutsideClick: false
-                });
-
-                const response = await fetch(`https://rentcar.stepprojects.ge/Purchase/purchase?phoneNumber=${phoneNumber}&carId=${carId}&multiplier=1`, {
-                    method: "POST",
-                    headers: { 
-                        "Authorization": `Bearer ${token}`,
-                        "accept": "*/*"
-                    }
-                });
-
-                if (response.ok) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: 'Rental confirmed. Check your profile for history.',
-                        confirmButtonColor: '#ff0000'
-                    });
-                } else {
-                    const errorMsg = await response.text();
-                    Swal.fire("Failed", "Rental could not be completed: " + (errorMsg || response.status), "error");
+            const response = await fetch(`https://rentcar.stepprojects.ge/Purchase/purchase?phoneNumber=${phoneNumber}&carId=${carId}&multiplier=1`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "accept": "*/*"
                 }
-            } catch (err) {
-                console.error(err);
-                Swal.fire("Error", "Connection to server failed.", "error");
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Rental confirmed. Check your profile for history.',
+                    confirmButtonColor: '#ff0000'
+                });
+            } else {
+                const errorMsg = await response.text();
+                Swal.fire("Failed", "Rental could not be completed: " + (errorMsg || response.status), "error");
             }
+        } catch (err) {
+            console.error(err);
+            Swal.fire("Error", "Connection to server failed.", "error");
         }
     }
+}
 
-    // Loading Data Functions
-    async function loadProducts() {
-        try {
-            const res = await fetch(API_URL);
-            const products = await res.json();
-            renderCards(products);
-            renderFilters(products);
-        } catch (err) { console.error(err); }
-    }
 
-    function renderCards(products) {
+async function loadProducts() {
+    try {
+        const res = await fetch(API_URL);
+        const products = await res.json();
+        renderCards(products);
+        renderFilters(products);
+    } catch (err) { console.error(err); }
+}
+
+function loadPopular() {
+    fetch(API_URL + "/popular")
+        .then(res => res.json())
+        .then(cars => {
+            const track = document.getElementById("popularTrack");
+            track.innerHTML = cars.map(car => `
+                <div class="popular-card" onclick="window.location.href='carpage.html?id=${car.id}'" style="cursor:pointer;">
+                    <button class="like-btn" onclick="toggleLike(this, '${car.id}'); event.stopPropagation();">
+                    <i class="fa-regular fa-heart"></i>
+                </button>
+                    <img src="${car.imageUrl1}" style="width:100%; height:100%; object-fit:cover;">
+                    <div style="position:absolute; bottom:10px; left:10px; z-index:2">
+                        <button class="btn btn-sm btn-light fw-bold" onclick="event.stopPropagation(); rentCar('${car.id}')">Quick Rent</button>
+                    </div>
+                    <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:4px; font-size:12px;">
+                        ${car.brand} ${car.model}
+                    </div>
+                </div>
+            `).join('');
+        });
+}
+
+function renderCards(products) {
     const row = document.querySelector("#roww");
     row.innerHTML = products.map(car => `
         <div class="col-md-6 col-xl-4 car-item" data-brand="${car.brand}">
             <div class="card cardd" onclick="window.location.href='carpage.html?id=${car.id}'" style="cursor:pointer;">
-                <button class="like-btn" onclick="event.stopPropagation(); toggleLike(this, '${car.id}')">
+                <button class="like-btn" onclick="toggleLike(this, '${car.id}'); event.stopPropagation();">
                     <i class="fa-regular fa-heart"></i>
                 </button>
                 <img src="${car.imageUrl1 || 'https://via.placeholder.com/300x200'}" class="card-img-top">
@@ -449,105 +464,132 @@
             </div>
         </div>
     `).join('');
+
+
+    setTimeout(restoreLikedStates, 200);
 }
 
-    function loadPopular() {
-    fetch(API_URL + "/popular")
-        .then(res => res.json())
-        .then(cars => {
-            const track = document.getElementById("popularTrack");
-            track.innerHTML = cars.map(car => `
-                <div class="popular-card" 
-                     onclick="window.location.href='carpage.html?id=${car.id}'" 
-                     style="cursor:pointer;">
-                    
-                    <img src="${car.imageUrl1}" style="width:100%; height:100%; object-fit:cover;">
-                    
-                    <div style="position:absolute; bottom:10px; left:10px; z-index:2">
-                        <button class="btn btn-sm btn-light fw-bold" 
-                                onclick="event.stopPropagation(); rentCar('${car.id}')">
-                            Quick Rent
-                        </button>
-                    </div>
-                    
-                    <div style="position:absolute; top:10px; left:10px; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:4px; font-size:12px;">
-                        ${car.brand} ${car.model}
-                    </div>
-                </div>
-            `).join('');
-        });
-}
 
-    // Sidebar Filter Logic
-    function renderFilters(products) {
-        const brands = [...new Set(products.map(p => p.brand))];
-        const filterContainer = document.querySelector("#brandFilters");
-        brands.forEach(brand => {
-            filterContainer.innerHTML += `
-                <div class="form-check">
-                    <input class="form-check-input filter-btn" type="radio" name="brand" value="${brand}" id="${brand}">
-                    <label class="form-check-label" for="${brand}">${brand}</label>
-                </div>`;
-        });
 
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('change', (e) => {
-                const selected = e.target.value;
-                document.querySelectorAll('.car-item').forEach(item => {
-                    item.style.display = (selected === "All" || item.dataset.brand === selected) ? "block" : "none";
-                });
+async function toggleLike(btn, carId) {
+    event.stopPropagation();   
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+        Swal.fire("Please log in", "You need to be logged in to like cars.", "warning");
+        return;
+    }
+
+    const phoneNumber = getPhoneFromToken(token);
+    if (!phoneNumber) {
+        Swal.fire("Session Error", "Please log in again.", "error");
+        return;
+    }
+
+    const isCurrentlyLiked = btn.classList.contains('liked');
+    const url = `https://rentcar.stepprojects.ge/api/Users/${phoneNumber}/favorites/${carId}`;
+
+    try {
+        let response;
+
+        if (isCurrentlyLiked) {
+            
+            response = await fetch(url, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` }
             });
-        });
-    }
+        } else {
+            
+            response = await fetch(url, {
+                method: "POST",
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+        }
 
-    // Carousel & Auth Helpers
-    document.querySelector(".next").onclick = () => document.getElementById("popularTrack").scrollBy({ left: 320, behavior: "smooth" });
-    document.querySelector(".prev").onclick = () => document.getElementById("popularTrack").scrollBy({ left: -320, behavior: "smooth" });
-
-    function handleLogout() {
-        localStorage.removeItem("token");
-        window.location.reload();
-    }
-
-    // Basic Like Toggle (UI only for now)
-    function toggleLike(btn, carId, carName, carImg) {
+        if (response.ok) {
+            
             btn.classList.toggle('liked');
             const icon = btn.querySelector('i');
-
-            // 1. Visual change
-            icon.className = btn.classList.contains('liked') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-
-            // 2. Save to LocalStorage
-            let favorites = JSON.parse(localStorage.getItem("vgt_favorites")) || [];
-
-            if (btn.classList.contains('liked')) {
-                // Add car to favorites if not already there
-                if (!favorites.find(c => c.id === carId)) {
-                    favorites.push({ id: carId, name: carName, img: carImg });
-                }
-            } else {
-                // Remove car from favorites
-                favorites = favorites.filter(c => c.id !== carId);
-            }
-
-            localStorage.setItem("vgt_favorites", JSON.stringify(favorites));
+            icon.className = btn.classList.contains('liked') 
+                ? 'fa-solid fa-heart text-danger' 
+                : 'fa-regular fa-heart';
+        } else {
+            console.error("Favorite toggle failed:", await response.text());
+            Swal.fire("Error", "Could not update favorite. Please try again.", "error");
         }
+    } catch (err) {
+        console.error(err);
+        Swal.fire("Connection Error", "Failed to reach server.", "error");
+    }
+}
 
-        // Extracts unique brands from the data to build the sidebar filter
-        function renderFilters(products) {
-            const brands = [...new Set(products.map(p => p.brand))];
-            const filterContainer = document.querySelector("#brandFilters");
-            brands.forEach(brand => {
-                filterContainer.innerHTML += `
-                    <div class="form-check">
-                        <input class="form-check-input filter-btn" type="radio" name="brand" value="${brand}" id="${brand}">
-                        <label class="form-check-label" for="${brand}">${brand}</label>
-                    </div>`;
-                
+async function restoreLikedStates() {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const phoneNumber = getPhoneFromToken(token);
+    if (!phoneNumber) return;
+
+    try {
+        const response = await fetch(`https://rentcar.stepprojects.ge/api/Users/${phoneNumber}/favorite-cars`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const favoriteCars = await response.json();
+            const likedIds = new Set(favoriteCars.map(car => car.id));   // assuming car objects have .id
+
+            document.querySelectorAll('.like-btn').forEach(btn => {
+                const onclickStr = btn.getAttribute('onclick') || '';
+                const match = onclickStr.match(/toggleLike\(this,\s*'([^']+)'/);
+                if (match && likedIds.has(match[1])) {
+                    btn.classList.add('liked');
+                    const icon = btn.querySelector('i');
+                    icon.className = 'fa-solid fa-heart text-danger';
+                }
             });
         }
+    } catch (err) {
+        console.error("Failed to load favorite states:", err);
+    }
+}
+
+
+function renderFilters(products) {
+    const brands = [...new Set(products.map(p => p.brand))];
+    const filterContainer = document.querySelector("#brandFilters");
+    filterContainer.innerHTML = '';
+
+    brands.forEach(brand => {
+        filterContainer.innerHTML += `
+            <div class="form-check">
+                <input class="form-check-input filter-btn" type="radio" name="brand" value="${brand}" id="${brand}">
+                <label class="form-check-label" for="${brand}">${brand}</label>
+            </div>`;
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('change', (e) => {
+            const selected = e.target.value;
+            document.querySelectorAll('.car-item').forEach(item => {
+                item.style.display = (selected === "All" || item.dataset.brand === selected) ? "block" : "none";
+            });
+        });
+    });
+}
+
+
+document.querySelector(".next").onclick = () => document.getElementById("popularTrack").scrollBy({ left: 320, behavior: "smooth" });
+document.querySelector(".prev").onclick = () => document.getElementById("popularTrack").scrollBy({ left: -320, behavior: "smooth" });
+
+function handleLogout() {
+    localStorage.removeItem("token");
+    window.location.reload();
+}
 </script>
-    </script>
 </body>
 
 </html>

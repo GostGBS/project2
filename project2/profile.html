@@ -10,17 +10,86 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        :root { --brand-red: #ff0000; --dark-bg: #000; --card-grad: linear-gradient(135deg, #111 0%, #000 100%); }
-        body { background-color: var(--dark-bg); color: white; font-family: 'Segoe UI', sans-serif; padding-top: 90px; }
-        .profile-sidebar { background: var(--card-grad); border: 1px solid #222; border-radius: 20px; padding: 30px; position: sticky; top: 100px; }
-        .profile-big-img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 3px solid var(--brand-red); margin-bottom: 15px; }
-        .section-title { border-left: 4px solid var(--brand-red); padding-left: 15px; margin-bottom: 25px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .mini-card { background: #0a0a0a; border: 1px solid #222; border-radius: 12px; overflow: hidden; transition: 0.3s; margin-bottom: 20px; height: 100%; }
-        .mini-card:hover { border-color: var(--brand-red); }
-        .mini-card img { height: 120px; width: 100%; object-fit: cover; }
-        .mini-card-body { padding: 10px; text-align: center; }
-        .navbar { background-color: #000 !important; border-bottom: 1px solid #222; }
-        .history-card { background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        :root {
+            --brand-red: #ff0000;
+            --dark-bg: #000;
+            --card-grad: linear-gradient(135deg, #111 0%, #000 100%);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            padding-top: 90px;
+        }
+
+        .profile-sidebar {
+            background: var(--card-grad);
+            border: 1px solid #222;
+            border-radius: 20px;
+            padding: 30px;
+            position: sticky;
+            top: 100px;
+        }
+
+        .profile-big-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--brand-red);
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            border-left: 4px solid var(--brand-red);
+            padding-left: 15px;
+            margin-bottom: 25px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mini-card {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+            margin-bottom: 20px;
+            height: 100%;
+        }
+
+        .mini-card:hover {
+            border-color: var(--brand-red);
+        }
+
+        .mini-card img {
+            height: 120px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .mini-card-body {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .navbar {
+            background-color: #000 !important;
+            border-bottom: 1px solid #222;
+        }
+
+        .history-card {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -62,7 +131,7 @@
                     </div>
                 </div>
 
-                <div>
+                <div id="favorites-section">
                     <h4 class="section-title">My Favorites</h4>
                     <div class="row" id="likedCars">
                         <p class="text-secondary text-center">Loading favorites...</p>
@@ -75,14 +144,20 @@
     <script>
     document.addEventListener("DOMContentLoaded", () => {
         const token = localStorage.getItem("token");
-        if (!token) { window.location.href = "loginn.html"; return; }
+        if (!token) { 
+            window.location.href = "loginn.html"; 
+            return; 
+        }
 
         const userPhone = getPhoneFromToken(token);
-        if (!userPhone) { window.location.href = "loginn.html"; return; }
+        if (!userPhone) { 
+            window.location.href = "loginn.html"; 
+            return; 
+        }
 
         loadUserData(userPhone, token);
-        loadLikedCars(userPhone, token);
         loadPurchaseHistory(userPhone, token);
+        loadUserFavorites();   
     });
 
     function getPhoneFromToken(token) {
@@ -103,13 +178,14 @@
             document.getElementById("dashName").innerText = user.firstName + " " + (user.lastName || "");
             document.getElementById("dashEmail").innerText = user.email || "---";
             document.getElementById("dashPhone").innerText = phone || "---";
-        } catch (error) { console.error("User Data Error:", error); }
+        } catch (error) { 
+            console.error("User Data Error:", error); 
+        }
     }
 
     async function loadPurchaseHistory(phone, token) {
         const container = document.getElementById("history-list");
         try {
-            // Using YOUR working Purchase endpoint
             const response = await fetch(`https://rentcar.stepprojects.ge/Purchase/${phone}`, {
                 method: "GET",
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': '*/*' }
@@ -150,29 +226,51 @@
         `).join('');
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-    loadLikedCars();
-});
+    
 
-function loadLikedCars() {
-    const container = document.getElementById('likedCars');
-    const favorites = JSON.parse(localStorage.getItem("vgt_favorites")) || [];
+async function loadUserFavorites() {
+    const favoriteContainer = document.getElementById('likedCars');
+    if (!favoriteContainer) return;
 
-    if (favorites.length === 0) {
-        container.innerHTML = '<div class="col-12 text-center text-secondary py-5"><p>No favorites yet.</p></div>';
-        return;
-    }
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-    container.innerHTML = favorites.map(car => `
-        <div class="col-md-6 mb-3">
-            <div class="mini-card">
-                <img src="${car.img}">
-                <div class="mini-card-body">
-                    <h6 class="mb-1">${car.name}</h6>
+    const phoneNumber = getPhoneFromToken(token);
+    if (!phoneNumber) return;
+
+    try {
+        const response = await fetch(`https://rentcar.stepprojects.ge/api/Users/${phoneNumber}/favorite-cars`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) {
+            favoriteContainer.innerHTML = `<p class="text-secondary text-center">No favorites yet.</p>`;
+            return;
+        }
+
+        const favorites = await response.json();
+
+        if (!favorites || favorites.length === 0) {
+            favoriteContainer.innerHTML = `<p class="text-secondary text-center">No favorites yet. Start liking some cars from the fleet!</p>`;
+            return;
+        }
+
+        favoriteContainer.innerHTML = favorites.map(car => `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="mini-card" onclick="window.location.href='carpage.html?id=${car.id}'" style="cursor:pointer;">
+                    <img src="${car.imageUrl1 || car.img || 'https://via.placeholder.com/300x200'}" alt="${car.brand || car.name}">
+                    <div class="mini-card-body">
+                        <h6 class="mb-1 fw-bold">${car.brand || ''} ${car.model || car.name || ''}</h6>
+                        <small class="text-secondary">Click to view details</small>
+                    </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+
+    } catch (error) {
+        console.error("Favorites load error:", error);
+        favoriteContainer.innerHTML = `<p class="text-danger text-center">Error loading favorites.</p>`;
+    }
 }
 
     function handleLogout() {
@@ -181,4 +279,5 @@ function loadLikedCars() {
     }
 </script>
 </body>
+
 </html>

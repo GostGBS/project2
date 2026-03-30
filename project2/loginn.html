@@ -21,7 +21,7 @@
             align-items: center;
         }
 
-        
+
         .login-card {
             width: 90%;
             max-width: 400px;
@@ -48,7 +48,7 @@
             font-size: 0.9rem;
         }
 
-        
+
         .form-control {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -65,7 +65,7 @@
             box-shadow: none;
         }
 
-        
+
         .btn-login {
             background: #ff0000;
             border: none;
@@ -108,11 +108,11 @@
     <div class="login-card">
         <h1 class="brand-logo">vGT</h1>
         <p class="subtitle">Welcome back to the fleet</p>
-        
+
         <form onsubmit="handleSignin(event)">
             <input type="tel" id="tel" placeholder="Phone Number" class="form-control" required>
             <input type="password" id="password" placeholder="Password" class="form-control" required>
-            
+
             <button type="submit" class="btn btn-login w-100">Log In</button>
         </form>
 
@@ -131,7 +131,7 @@
             };
 
             try {
-                
+
                 Swal.fire({
                     title: 'Verifying...',
                     didOpen: () => { Swal.showLoading() },
@@ -140,8 +140,9 @@
 
                 const response = await axios.post("https://rentcar.stepprojects.ge/api/Users/login", loginData);
 
-                
+
                 window.localStorage.setItem("token", response.data.token);
+                window.localStorage.setItem("phoneNumber", response.data.phoneNumber);
 
                 await Swal.fire({
                     title: "ავტორიზაცია წარმატებით დასრულდა!",
@@ -150,7 +151,7 @@
                     showConfirmButton: false
                 });
 
-                
+
                 window.location.href = "index.html";
 
             } catch (error) {
@@ -163,6 +164,7 @@
                 });
             }
         }
+        
     </script>
 </body>
 
