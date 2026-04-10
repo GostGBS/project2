@@ -265,11 +265,20 @@
                         <label class="form-check-label" for="all">All Brands</label>
                     </div>
                     <div id="brandFilters"></div>
+                    
+                    <h5 class="fw-bold mb-3">Cities</h5>
+                    <select id="cities" class="form-select" onchange="filterByCity(this)">
+                        <option selected disabled>Choose City</option>
+                    </select>
+                
                 </div>
+                
             </div>
 
             <div class="col-lg-9">
                 <div class="row g-4" id="roww"></div>
+
+                <div id="pagination" class="d-flex justify-content-center mt-4"></div>
             </div>
         </div>
     </div>
@@ -323,6 +332,8 @@
     </footer>
 
     <script>
+let currentPage = 1;
+let currentCity = "";
 
 const API_URL = "https://rentcar.stepprojects.ge/api/Car";
 
@@ -335,6 +346,62 @@ document.addEventListener("DOMContentLoaded", () => {
     loadProducts();
     loadPopular();
 });
+
+function renderPagination(totalCount) {
+    const pageSize = 10;
+    const totalPages = Math.ceil(totalCount / pageSize);
+    const pagination = document.querySelector("#pagination");
+
+    pagination.innerHTML = "";
+
+    for (let i = 1; i <= totalPages; i++) {
+        pagination.innerHTML += `
+            <button class="btn ${i === currentPage ? 'btn-dark' : 'btn-outline-dark'} mx-1"
+                onclick="filterByCity({value: '${currentCity}'}, ${i})">
+                ${i}
+            </button>
+        `;
+    }
+}
+
+function filterByCity(elem, page = 1) {
+    const row = document.querySelector("#roww");
+    currentCity = elem.value;
+    currentPage = page;
+
+    row.innerHTML = "";
+
+    fetch(`https://rentcar.stepprojects.ge/api/Car/filter?city=${currentCity}&pageIndex=${currentPage}&pageSize=10`)
+    .then(response => response.json())
+    .then(product => {
+
+        row.innerHTML = product.data.map(car => `
+            <div class="col-md-6 col-xl-4 car-item" data-brand="${car.brand}">
+                <div class="card cardd" onclick="window.location.href='carpage.html?id=${car.id}'" style="cursor:pointer;">
+                    <button class="like-btn" onclick="toggleLike(this, '${car.id}'); event.stopPropagation();">
+                        <i class="fa-regular fa-heart"></i>
+                    </button>
+                    <img src="${car.imageUrl1 || 'https://via.placeholder.com/300x200'}" class="card-img-top">
+                    <div class="card-body text-center">
+                        <h5 class="card-title fw-bold">${car.brand} ${car.model}</h5>
+                        <p class="text-secondary small">${car.price} GEL / Day</p>
+                        <button class="btn rent-btn-card" onclick="event.stopPropagation(); rentCar('${car.id}')">Rent Now</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        renderPagination(product.totalItems);
+    });
+}
+
+pagination.innerHTML += `
+    <button class="btn btn-outline-dark mx-1"
+        ${currentPage === 1 ? "disabled" : ""}
+        onclick="filterByCity({value: '${currentCity}'}, ${currentPage - 1})">
+        Prev
+    </button>
+`;
 
 
 function getPhoneFromToken(token) {
@@ -469,6 +536,21 @@ function renderCards(products) {
     setTimeout(restoreLikedStates, 200);
 }
 
+window.onload = function() {
+    fetch("https://rentcar.stepprojects.ge/api/Car/cities").then(function(response) {
+        return response.json();
+    }).then(function(data) {
+        data.forEach(function(city) {
+            var selects = document.getElementById("cities");
+
+            var option = document.createElement("option");
+            option.textContent = city;
+            option.value = city;
+
+            selects.appendChild(option);
+        });
+    })
+}
 
 
 async function toggleLike(btn, carId) {
